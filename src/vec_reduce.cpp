@@ -1,9 +1,6 @@
 
 #include "vec_reduce.h"
 
-#include <tbb/blocked_range.h>
-#include <tbb/parallel_reduce.h>
-
 #include <filesystem>
 #include <iostream>
 
@@ -87,25 +84,8 @@ void vec_reduce(const cl::Context &context, const cl::Device &selected_device,
                1e-9;
   std::cout << "Normal CPU Execution took: " << delta << " s\n";
 
-  start = std::chrono::high_resolution_clock::now();
-  float total_host_tbb = tbb::parallel_reduce(
-      tbb::blocked_range<float *>(h_a, h_a + N_ELEMENTS), 0.0f,
-      [](const tbb::blocked_range<float *> &r, float init) -> float {
-        for (float *a = r.begin(); a != r.end(); ++a) {
-          init += *a;
-        }
-        return init;
-      },
-      [](float x, float y) -> float { return x + y; });
-  delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
-              std::chrono::high_resolution_clock::now() - start)
-              .count() *
-          1e-9;
-  std::cout << "TBB CPU Execution took: " << delta << " s\n";
-
   std::cout << "GPU total sum: " << total_gpu << std::endl;
   std::cout << "CPU total sum: " << total_host << std::endl;
-  std::cout << "CPU (tbb) total sum: " << total_host_tbb << std::endl;
 
   // Timings...
   // 200M GPU -> 0.014 s

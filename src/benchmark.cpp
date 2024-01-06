@@ -53,15 +53,15 @@ int main(int argc, char **argv) {
 
   cl::Context context(selected_device);
 
-  // std::cout << "#------ VEC SUM START ------#\n";
-  // vec_sum(context, selected_device, N_ELEMENTS);
-  // std::cout << "#------ VEC SUM END ------#\n";
+  std::cout << "#------ VEC SUM START ------#\n";
+  vec_sum(context, selected_device, N_ELEMENTS);
+  std::cout << "#------ VEC SUM END ------#\n";
 
   // std::cout << "#------ VEC REDUCE START ------#\n";
   // vec_reduce(context, selected_device, N_ELEMENTS);
   // std::cout << "#------ VEC REDUCE END ------#\n";
 
-  std::cout << "#------ MODEL COST START ------#\n";
-  model(context, selected_device);
-  std::cout << "#------ MODEL COST END ------#\n";
+  // std::cout << "#------ MODEL COST START ------#\n";
+  // model(context, selected_device);
+  // std::cout << "#------ MODEL COST END ------#\n";
 }

@@ -1,4 +1,3 @@
-#include <tbb/parallel_for.h>
 
 #include <filesystem>
 #include <iostream>
@@ -13,7 +12,10 @@ void vec_sum(const cl::Context &context, const cl::Device &selected_device,
   programFactory factory(context);
 
   auto cwd = std::filesystem::current_path();
-  auto program = factory.fromSource(cwd / "kernels.cl");
+  // auto program = factory.fromSource(cwd / "vec_sum.cl");
+
+  auto program =
+      factory.fromBinarySource(selected_device, cwd / "vec_sum.clbin");
 
   auto build_result = program.build("-I .");
 
@@ -102,19 +104,6 @@ void vec_sum(const cl::Context &context, const cl::Device &selected_device,
                    .count();
 
   std::cout << "Host execution (sequential) took: " << (double)delta * 1e-9
-            << std::endl;
-
-  start = std::chrono::high_resolution_clock::now();
-  auto tbb_range = tbb::blocked_range<int>(0, N_ELEMENTS);
-  tbb::parallel_for(tbb_range, [&](tbb::blocked_range<int> r) {
-    for (int i = r.begin(); i != r.end(); ++i) {
-      h_c_host_calc[i] = h_a[i] + h_b[i];
-    }
-  });
-  delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
-              std::chrono::high_resolution_clock::now() - start)
-              .count();
-  std::cout << "Host execution (TBB) took: " << (double)delta * 1e-9
             << std::endl;
 
   std::cout << "checking results...\n";
